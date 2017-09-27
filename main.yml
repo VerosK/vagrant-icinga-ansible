@@ -1,0 +1,40 @@
+---
+- name: Setup common tasks
+  hosts: all
+  any_errors_fatal: yes
+  tags: common
+  roles:
+    - role: geerlingguy.ntp
+      tags: ntp
+      when: ntp_enabled|default(False)
+    - role: VerosK.fake-certs
+      tags: fakecerts
+
+- name: Setup PostgreSQL Icinga database
+  hosts: icinga
+  any_errors_fatal: yes
+  roles:
+    - role: VerosK.postgresql
+
+- name: Icinga clients
+  hosts: icinga-clients,icinga
+  any_errors_fatal: yes
+  roles:
+    - role: VerosK.icinga2
+#      tags: icinga-client
+#    - role: VerosK.icinga2-cluster
+#      tags: [ icinga-cluster, icinga-client ]
+#
+- name: Icinga web
+  hosts: icinga-web
+  roles:
+    - role: VerosK.acme-sh
+    - role: VerosK.nginx
+      tags: nginx
+    - role: geerlingguy.redis
+    - role: geerlingguy.php
+      tags: php
+    - role: VerosK.icingaweb2-php-fpm
+      tags: icingaweb2
+    - role: VerosK.icingaclassic
+      tags: [ icingaclassic ]

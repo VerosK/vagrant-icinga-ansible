@@ -1,0 +1,8 @@
+# ignore locally generated certificates
+files/ca
+
+# ansible files
+*.retry
+
+# misc
+*~
